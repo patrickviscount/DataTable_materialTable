@@ -57,12 +57,13 @@ const Modal = (props) => {
                 <h6> Contracts in Zycus:</h6> {data["Contracts in Zycus"]} <br /> <hr />
                 <h6> IT Source:</h6> {data["IT Source"]} <br /> <hr />
                  <div>
+                <h6>Contact at Axis:</h6>
                 <a
                     href={`${findURL(data)}`}
                     target="_blank"
                     rel="noopener noreferrer" 
                     >
-                    Relevant Contact
+                    {findURL(data)}
                 </a>
                 </div> <br /> <hr />
                 </div>
@@ -85,7 +86,7 @@ function findURL(dataStream) {
         url = data[i];
         return url;
       }
-      else if (data[i].startsWith("mailtdo")) {
+      else if (data[i].startsWith("mailto")) {
         url = data[i];
       }
     }
