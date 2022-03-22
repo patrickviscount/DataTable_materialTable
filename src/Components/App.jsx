@@ -15,18 +15,11 @@ function DataTable() {
   const [segment, setSegment] = useState("all");
   const [show, setShow] = useState(false);
   const [idNum, setIdNum] = useState(1);
+  const [fontSize, setFontSize] = useState(20);
+
 
   useEffect(()=>{
     getDataList();
-    // let x = document.querySelectorAll(".MuiIconButton-root");
-    // console.log(x);
-    // x[6].addEventListener('click', function() {
-    // if (checker === 1)
-    //   checker = 0;
-    // else
-    //   checker = 1;
-    // handleColumns();
-    // });
   },[]);
 
   const getDataList=()=> {
@@ -42,37 +35,77 @@ function DataTable() {
       columns[6].hidden = true;
       columns[9].hidden = true;
       columns[10].hidden = true;
-      columns[11].hidden = true;
+      // setFontSize(20);
+    }
+    else if (checker === 0) {
+      // setFontSize(16);
     }
     return columns;
   }
 
   const columns = [
-    { title: "ID", field: "id", editable: false},
-    { title: "Vendor name", field: "Vendor name"},
-    {
-      title: "More Info",
-      render: (rowData) => (
-        <button onClick={() => handleClickModal(rowData["id"])}>
-          More Info </button> 
-          )},
-    { title: "Vendor contact", field: "Vendor contact"},
-    { title: "Buisness Unit Acquiring", field: "Buisness Unit Acquiring"},
+    { title: "ID", field: "id", editable: false, hidden: true},
+    { title: "Vendor name", field: "Vendor name", cellStyle: {
+        fontSize: fontSize,
+        backgroundColor: '#FFF'
+    }, headerStyle: {
+        fontSize: fontSize
+    }},
+    { title: "Vendor contact", field: "Vendor contact", cellStyle: {
+      fontSize: fontSize
+  }, headerStyle: {
+      fontSize: fontSize
+  }},
+    { title: "Buisness Unit Acquiring", field: "Buisness Unit Acquiring", cellStyle: {
+      fontSize: fontSize
+  }, headerStyle: {
+      fontSize: fontSize
+  }}, 
     {
       title: "Lead Data Steward",
       field: "Lead Data Steward",
-      render: (rowData) => <div> {rowData["Lead Data Steward"]} |<a href={`${findURL(rowData)}`} target="_blank" rel="noopener noreferrer"> Contact </a> </div>
+      render: (rowData) => <a href={`${findURL(rowData)}`} target="_blank" rel="noopener noreferrer"> {rowData["Lead Data Steward"]} </a>, 
+      cellStyle: {
+        fontSize: fontSize
+    },headerStyle: {
+        fontSize: fontSize
+    }
     },
     {
       title: "Business Contact",
       field: "Business Contact",
-      render: (rowData) => <div> {rowData["Business Contact"]} |<a href={`${findURL(rowData)}`} target="_blank" rel="noopener noreferrer"> Contact </a> </div>
+      render: (rowData) => <a href={`${findURL(rowData)}`} target="_blank" rel="noopener noreferrer"> {rowData["Business Contact"]} </a>,
+      cellStyle: {
+        fontSize: fontSize
+    }, headerStyle: {
+        fontSize: fontSize
+    }
     },
-    { title: "Main Users of Data", field: "Main Users of Data" },
-    { title: "Brief Desc of Data Used", field: "Brief Desc of Data Used" },
-    { title: "Value Dervied From Data", field: "Value Dervied From Data" },
-    { title: "Contracts in Zycus", field: "Contracts in Zycus" },
-    { title: "IT Source", field: "IT Source", hidden: true, hiddenByColumnsButton: true}
+    { title: "Main Users of Data", field: "Main Users of Data", cellStyle: {
+      fontSize: fontSize
+  }, headerStyle: {
+      fontSize: fontSize
+  } },
+    { title: "Brief Desc of Data Used", field: "Brief Desc of Data Used", cellStyle: {
+      fontSize: fontSize
+  }, headerStyle: {
+      fontSize: fontSize
+  } },
+    { title: "Value Dervied From Data", field: "Value Dervied From Data", cellStyle: {
+      fontSize: fontSize
+  }, headerStyle: {
+      fontSize: fontSize
+  } },
+    { title: "Contracts in Zycus", field: "Contracts in Zycus", hidden: true, cellStyle: {
+      fontSize: fontSize
+  }, headerStyle: {
+      fontSize: fontSize
+  }},
+    { title: "IT Source", field: "IT Source", hidden: true, hiddenByColumnsButton: true, cellStyle: {
+      fontSize: fontSize
+  }, headerStyle: {
+      fontSize: fontSize
+  }}
   ];
 
   function handleClickModal(Id) {
@@ -107,10 +140,6 @@ function DataTable() {
 
   return (
     <div className="App">
-      <h1 align="center">DataTable using the Material Table library</h1>
-      <h4 align="center">
-        Please see the react component below
-      </h4>
       <MaterialTable
         title="3rd Party Vendors"
         data={Array.from(data)}
@@ -121,7 +150,9 @@ function DataTable() {
           filtering: filter,
           search: true,
           draggable: true,
-          paginationType: "stepped"
+          paginationType: "stepped",
+          pageSize: 5,
+          rowsPerPageOptions: [5, 10, 20, 50, { value: -1, label: 'All' } ]
         }}
         editable={{
           onRowAdd: (newRow) =>
@@ -180,7 +211,7 @@ function DataTable() {
         icon:() => 
         <Checkbox
         checked = {filter}
-        onChange={handleCheck}
+        onChange={handleCheck} 
         inputProps={{'aria-label': 'primary checkbox'}}
         color="primary"
         />,
@@ -205,7 +236,12 @@ function DataTable() {
           </Select>,
           tooltip: "Filter Users of Data",
           isFreeAction: true
-        }
+        },
+        {
+          icon: 'info',
+          tooltip: 'More Info',
+          onClick: (rowData, event) => {handleClickModal(event.id)}
+      },
       ]}
       />
       <Modal
