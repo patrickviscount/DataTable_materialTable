@@ -1,5 +1,14 @@
+/* 
 .App {
-  /* text-align: center; */
+  font-size: 25px !important;
+}
+
+.MuiPaper-root {
+  font-size: 20px !important;
+} */
+
+.MTableHeader-header-17 {
+  background-color: #00A1F1 !important;
 }
 
 .App-logo {
@@ -26,6 +35,10 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.column.cellStyle {
+  font-size: 1000px;
 }
 
 @keyframes App-logo-spin {
