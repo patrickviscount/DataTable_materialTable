@@ -68,6 +68,17 @@ h6 {
   color: rgb(141, 141, 141);
 }
 
+//
+|small fonts make bigger for simplified view, same small font for expanded view
+| Make row amount have 5,10,20,50,all
+|brief desc - see what happens with paragraph, other colummns too
+|make it work with a phone
+|presentable - change header (dataTable header)
+
+check technically but reverted for me in dev |more rows on render
+check |hide zyrus contact except on pop up
+CHECK | hyperlink persons name, get rid of contact hyperlink
+check bitch |more info with actions
 
   return (
     <div
