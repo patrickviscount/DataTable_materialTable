@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
 import MaterialTable from "material-table";
-import { Checkbox, Select, MenuItem } from "@material-ui/core";
+import { Checkbox, Select, MenuItem, TablePagination } from "@material-ui/core";
 import Modal from "./Modal"
 const URL = "http://localhost:4000/DataStreams";
 let oldSeg = "all";
@@ -22,6 +22,15 @@ function DataTable() {
     getDataList();
   },[]);
 
+  useEffect(()=>{
+    if (checker === 0) {
+      setFontSize(15);
+    }
+    if (checker === 1) {
+      setFontSize(20);
+    }
+  },[checker]);
+  
   const getDataList=()=> {
     fetch(URL).then(resp=>resp.json())
     .then(resp=>setData(resp))
@@ -36,9 +45,6 @@ function DataTable() {
       columns[9].hidden = true;
       columns[10].hidden = true;
       // setFontSize(20);
-    }
-    else if (checker === 0) {
-      // setFontSize(16);
     }
     return columns;
   }
@@ -151,9 +157,18 @@ function DataTable() {
           search: true,
           draggable: true,
           paginationType: "stepped",
-          pageSize: 5,
-          rowsPerPageOptions: [5, 10, 20, 50, { value: -1, label: 'All' } ]
+          pageSize: 5
         }}
+            
+        components={{
+          Pagination: props => (
+            <TablePagination
+              {...props}
+              rowsPerPageOptions={[5, 10, 20, 50, { value: data.length, label: 'All' }]}
+            />
+          )
+        }}
+
         editable={{
           onRowAdd: (newRow) =>
             new Promise((resolve, reject) => {
