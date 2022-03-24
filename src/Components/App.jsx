@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import MaterialTable from "material-table";
+import MaterialTable, {MTableToolbar} from "material-table";
 import { Checkbox, Select, MenuItem, TablePagination } from "@material-ui/core";
 import Modal from "./Modal"
 const URL = "http://localhost:4000/DataStreams";
@@ -15,21 +15,21 @@ function DataTable() {
   const [segment, setSegment] = useState("all");
   const [show, setShow] = useState(false);
   const [idNum, setIdNum] = useState(1);
-  const [fontSize, setFontSize] = useState(20);
+  // const [fontSize, setFontSize] = useState(20);
 
 
   useEffect(()=>{
     getDataList();
   },[]);
 
-  useEffect(()=>{
-    if (checker === 0) {
-      setFontSize(15);
-    }
-    if (checker === 1) {
-      setFontSize(20);
-    }
-  },[checker]);
+  // useEffect(()=>{
+  //   if (checker === 0) {
+  //     setFontSize(15);
+  //   }
+  //   if (checker === 1) {
+  //     setFontSize(20);
+  //   }
+  // },[checker]);
   
   const getDataList=()=> {
     fetch(URL).then(resp=>resp.json())
@@ -37,86 +37,63 @@ function DataTable() {
   };
 
   const getColumns = () => {
+    columns[9].hidden = true;
+
     if (checker === 1) {
       columns[0].hidden = true;
+      columns[2].hidden = true;
       columns[3].hidden = true;
-      columns[4].hidden = true;
-      columns[6].hidden = true;
+      columns[8].hidden = true;
       columns[9].hidden = true;
-      columns[10].hidden = true;
-      // setFontSize(20);
+      // console.log(columns);
+      // columns[2].cellStyle={backgroundColor: '#fff'};
     }
     return columns;
   }
 
   const columns = [
     { title: "ID", field: "id", editable: false, hidden: true},
-    { title: "Vendor name", field: "Vendor name", cellStyle: {
-        fontSize: fontSize,
-        backgroundColor: '#FFF'
-    }, headerStyle: {
-        fontSize: fontSize
-    }},
-    { title: "Vendor contact", field: "Vendor contact", cellStyle: {
-      fontSize: fontSize
-  }, headerStyle: {
-      fontSize: fontSize
+    { title: "Vendor name", field: "Vendor name", render: (rowData) => <p>{handleRender(rowData['Vendor name'])}</p>},
+    { title: "Vendor contact", field: "Vendor contact", render: (rowData) => <p>{handleRender(rowData['Vendor contact'])}</p>, cellStyle: {
+      backgroundColor: '#FFF'
   }},
-    { title: "Buisness Unit Acquiring", field: "Buisness Unit Acquiring", cellStyle: {
-      fontSize: fontSize
-  }, headerStyle: {
-      fontSize: fontSize
-  }}, 
+    { title: "Buisness Unit Acquiring", field: "Buisness Unit Acquiring", render: (rowData) => <p>{handleRender(rowData['Buisness Unit Acquiring'])}</p>}, 
     {
       title: "Lead Data Steward",
       field: "Lead Data Steward",
-      render: (rowData) => <a href={`${findURL(rowData)}`} target="_blank" rel="noopener noreferrer"> {rowData["Lead Data Steward"]} </a>, 
-      cellStyle: {
-        fontSize: fontSize
-    },headerStyle: {
-        fontSize: fontSize
+      render: (rowData) => <a href={`${findURL(rowData)}`} target="_blank" rel="noopener noreferrer"> {handleRender(rowData["Lead Data Steward"])} </a>, cellStyle: {
+        backgroundColor: '#FFF'
     }
     },
     {
       title: "Business Contact",
       field: "Business Contact",
-      render: (rowData) => <a href={`${findURL(rowData)}`} target="_blank" rel="noopener noreferrer"> {rowData["Business Contact"]} </a>,
-      cellStyle: {
-        fontSize: fontSize
-    }, headerStyle: {
-        fontSize: fontSize
-    }
+      render: (rowData) => <a href={`${findURL(rowData)}`} target="_blank" rel="noopener noreferrer"> {handleRender(rowData["Business Contact"])} </a>
     },
-    { title: "Main Users of Data", field: "Main Users of Data", cellStyle: {
-      fontSize: fontSize
-  }, headerStyle: {
-      fontSize: fontSize
-  } },
-    { title: "Brief Desc of Data Used", field: "Brief Desc of Data Used", cellStyle: {
-      fontSize: fontSize
-  }, headerStyle: {
-      fontSize: fontSize
-  } },
-    { title: "Value Dervied From Data", field: "Value Dervied From Data", cellStyle: {
-      fontSize: fontSize
-  }, headerStyle: {
-      fontSize: fontSize
-  } },
-    { title: "Contracts in Zycus", field: "Contracts in Zycus", hidden: true, cellStyle: {
-      fontSize: fontSize
-  }, headerStyle: {
-      fontSize: fontSize
+    { title: "Main Users of Data", field: "Main Users of Data", render: (rowData) => <p>{handleRender(rowData['Main Users of Data'])}</p>, cellStyle: {
+      backgroundColor: '#FFF'
   }},
-    { title: "IT Source", field: "IT Source", hidden: true, hiddenByColumnsButton: true, cellStyle: {
-      fontSize: fontSize
-  }, headerStyle: {
-      fontSize: fontSize
-  }}
+    { title: "Brief Desc of Data Used", field: "Brief Desc of Data Used", render: (rowData) => <p>{handleRender(rowData['Brief Desc of Data Used'])}</p>},
+    { title: "Value Dervied From Data", field: "Value Dervied From Data", render: (rowData) => <p>{handleRender(rowData['Value Dervied From Data'])}</p>, cellStyle: {
+      backgroundColor: '#FFF'
+  }},
+    { title: "Contracts in Zycus", field: "Contracts in Zycus", hidden: true, render: (rowData) => <p>{handleRender(rowData['Contracts in Zycus'])}</p>},
+    { title: "IT Source", field: "IT Source", hidden: true, hiddenByColumnsButton: true, render: (rowData) => <p>{handleRender(rowData['IT Source'])}</p>}
   ];
 
   function handleClickModal(Id) {
     setIdNum(Id);
     setShow(!show);
+  }
+
+  function handleRender(str) {
+    if(str.length > 100){
+      let temp = str.slice(0, 99);
+      temp = temp + '...';
+      return temp;
+    }
+
+    return str;
   }
 
   const handleColumns = () => {
@@ -147,11 +124,12 @@ function DataTable() {
   return (
     <div className="App">
       <MaterialTable
-        title="3rd Party Vendors"
+        title=" "
         data={Array.from(data)}
         columns={getColumns()}
         options={{
           actionsColumnIndex: -1,
+          actionsCellStyle: {justifyContent: "center"},
           addRowPosition: "first",
           filtering: filter,
           search: true,
@@ -166,6 +144,11 @@ function DataTable() {
               {...props}
               rowsPerPageOptions={[5, 10, 20, 50, { value: data.length, label: 'All' }]}
             />
+          ),
+          Toolbar: props => (
+            <div style={{ backgroundColor: '#e8eaf5' }}>
+              <MTableToolbar {...props} classes={{ root: "my-temp-class" }} />
+            </div>
           )
         }}
 

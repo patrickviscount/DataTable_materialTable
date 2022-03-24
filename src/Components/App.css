@@ -1,14 +1,27 @@
-/* 
+
 .App {
-  font-size: 25px !important;
+  font-size: clamp(10px, calc( 10px + (24 - 16) * (100vw - 400px) / (800) ), 20px);
 }
 
-.MuiPaper-root {
-  font-size: 20px !important;
+.my-temp-class {
+  height: clamp(30px, 64px, 100px) !important;
+}
+
+/* .MuiToolbar-root{
+  max-height: 10vh;
+} */
+
+/* .MuiPaper-root {
+  font-size: 20px !important; */
+  /* max-width: 75%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 } */
 
 .MTableHeader-header-17 {
   background-color: #00A1F1 !important;
+  font-size: clamp(10px, calc( 10px + (24 - 16) * (100vw - 400px) / (800) ), 17px) !important;
 }
 
 .App-logo {
@@ -35,10 +48,6 @@
 
 .App-link {
   color: #61dafb;
-}
-
-.column.cellStyle {
-  font-size: 1000px;
 }
 
 @keyframes App-logo-spin {

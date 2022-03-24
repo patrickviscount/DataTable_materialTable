@@ -6,6 +6,7 @@ import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
+    <h1 style={{textAlign:'center'}}>Material Table demo</h1>
     <App />
   </React.StrictMode>,
   document.getElementById('root')
