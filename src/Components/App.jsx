@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import "./App.css";
 import MaterialTable, {MTableToolbar} from "material-table";
 import { Checkbox, Select, MenuItem, TablePagination } from "@material-ui/core";
-import Modal from "./Modal"
+import Modal from "./Modal";
+import useWindowDimensions from "./WindowsDimentionsHook";
+import { getByTitle } from "@testing-library/react";
 const URL = "http://localhost:4000/DataStreams";
 let oldSeg = "all";
 var checker = 1;
@@ -15,12 +17,37 @@ function DataTable() {
   const [segment, setSegment] = useState("all");
   const [show, setShow] = useState(false);
   const [idNum, setIdNum] = useState(1);
+  const [title, setTitle] = useState('3rd Party Data Vendors');
+  const {width, height} = useWindowDimensions();
+  
   // const [fontSize, setFontSize] = useState(20);
 
 
   useEffect(()=>{
     getDataList();
   },[]);
+
+  useEffect(()=>{
+    console.log(`width: ${width} | height: ${height}`);
+      if (width < 635){
+        setTitle('');
+      }
+      if (width > 635){
+        setTitle('3rd Party Data Vendors');
+      }
+  
+  },[width, height]);
+
+  useEffect(() => {
+
+    if((segment !== "all" && oldSeg !== "all") || (segment === "all" && oldSeg !== "all")) {
+      getDataList();
+      setSegment("all");
+    }
+    setData(segment === 'all'? data : data.filter(dt => dt["Main Users of Data"] === segment));
+    oldSeg = segment;
+  }, [segment]);
+  
 
   // useEffect(()=>{
   //   if (checker === 0) {
@@ -35,6 +62,24 @@ function DataTable() {
     fetch(URL).then(resp=>resp.json())
     .then(resp=>setData(resp))
   };
+
+  function getOptions() {
+    let options = {
+      actionsColumnIndex: -1,
+      actionsCellStyle: {justifyContent: "center"},
+      addRowPosition: "first",
+      filtering: filter,
+      search: true,
+      draggable: true,
+      paginationType: "stepped",
+      pageSize: 5
+    }
+    if (width < 935){
+      options.search = false;
+    }
+
+    return options;
+  }
 
   const getColumns = () => {
     columns[9].hidden = true;
@@ -111,32 +156,13 @@ function DataTable() {
     setFilter(!filter);
   }
 
-  useEffect(() => {
-
-    if((segment !== "all" && oldSeg !== "all") || (segment === "all" && oldSeg !== "all")) {
-      getDataList();
-      setSegment("all");
-    }
-    setData(segment === 'all'? data : data.filter(dt => dt["Main Users of Data"] === segment));
-    oldSeg = segment;
-  }, [segment]);
-
   return (
     <div className="App">
       <MaterialTable
-        title=" "
+        title={title}
         data={Array.from(data)}
         columns={getColumns()}
-        options={{
-          actionsColumnIndex: -1,
-          actionsCellStyle: {justifyContent: "center"},
-          addRowPosition: "first",
-          filtering: filter,
-          search: true,
-          draggable: true,
-          paginationType: "stepped",
-          pageSize: 5
-        }}
+        options={getOptions()}
             
         components={{
           Pagination: props => (
