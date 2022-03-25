@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
 import MaterialTable, {MTableToolbar} from "material-table";
 import { Checkbox, Select, MenuItem, TablePagination } from "@material-ui/core";
 import Modal from "./Modal";
 import useWindowDimensions from "./WindowsDimentionsHook";
-import { getByTitle } from "@testing-library/react";
 const URL = "http://localhost:4000/DataStreams";
 let oldSeg = "all";
 var checker = 1;
@@ -17,9 +16,20 @@ function DataTable() {
   const [segment, setSegment] = useState("all");
   const [show, setShow] = useState(false);
   const [idNum, setIdNum] = useState(1);
+  const [dropDownWidth, setDropDownWidth] = useState({width: 100, display: 'inline'});
   const [title, setTitle] = useState('3rd Party Data Vendors');
+  const [options, setOptions] = useState({
+    actionsColumnIndex: -1,
+    actionsCellStyle: {justifyContent: "center"},
+    addRowPosition: "first",
+    filtering: filter,
+    search: true,
+    draggable: true,
+    paginationType: "stepped",
+    pageSize: 5
+  });
   const {width, height} = useWindowDimensions();
-  
+  const ref = useRef(null);
   // const [fontSize, setFontSize] = useState(20);
 
 
@@ -28,18 +38,28 @@ function DataTable() {
   },[]);
 
   useEffect(()=>{
-    console.log(`width: ${width} | height: ${height}`);
-      if (width < 635){
-        setTitle('');
-      }
-      if (width > 635){
-        setTitle('3rd Party Data Vendors');
-      }
-  
+    let tableWidth = ref.current.offsetWidth;
+    if (tableWidth < 975){
+      setTitle('');
+    }
+    if (tableWidth > 975){
+      setTitle('3rd Party Data Vendors');  
+    }
+    if (tableWidth < 740){
+      options.search = false;
+    }
+    if (tableWidth > 740){
+      options.search = true;
+    }
+    if (tableWidth < 422){
+      setDropDownWidth({width: 0, display: 'none'});
+    }
+    if (tableWidth > 422){
+      setDropDownWidth({width: 100, display: 'inline'});
+    }
   },[width, height]);
 
   useEffect(() => {
-
     if((segment !== "all" && oldSeg !== "all") || (segment === "all" && oldSeg !== "all")) {
       getDataList();
       setSegment("all");
@@ -62,24 +82,6 @@ function DataTable() {
     fetch(URL).then(resp=>resp.json())
     .then(resp=>setData(resp))
   };
-
-  function getOptions() {
-    let options = {
-      actionsColumnIndex: -1,
-      actionsCellStyle: {justifyContent: "center"},
-      addRowPosition: "first",
-      filtering: filter,
-      search: true,
-      draggable: true,
-      paginationType: "stepped",
-      pageSize: 5
-    }
-    if (width < 935){
-      options.search = false;
-    }
-
-    return options;
-  }
 
   const getColumns = () => {
     columns[9].hidden = true;
@@ -157,12 +159,12 @@ function DataTable() {
   }
 
   return (
-    <div className="App">
+    <div className="App" ref={ref}>
       <MaterialTable
         title={title}
         data={Array.from(data)}
         columns={getColumns()}
-        options={getOptions()}
+        options={options}
             
         components={{
           Pagination: props => (
@@ -222,14 +224,10 @@ function DataTable() {
       actions = {[
         {
           icon:() => 
-          <Checkbox
-          checked = {view}
-          onChange={handleColumns}
-          inputProps={{'aria-label': 'primary checkbox'}}
-          color="primary"
-          />,
-          tooltip:"Hide/Show Columns",
-          isFreeAction: true
+          <button className="columnsButton" onClick={handleColumns} style={{marginTop: '5%', ariaLabel: 'primary checkbox'}}>
+          {view ? 'Show Columns' : 'Hide Columns'}
+          </ button>,
+          isFreeAction: true 
         },
         {
         icon:() => 
@@ -247,7 +245,7 @@ function DataTable() {
           <Select
           labelId="demo-simple-select-label"
           id="demo-select-simple"
-          style={{width: 100}}
+          style={dropDownWidth}
           value={segment}
           onChange={(e) => {
             setSegment(e.target.value);
