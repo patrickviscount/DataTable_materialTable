@@ -14,6 +14,7 @@ function DataTable() {
   const [filter, setFilter] = useState(false);
   const [view, setView] = useState(true);
   const [segment, setSegment] = useState("all");
+  const [tableClass, setTableClass] = useState("Simple");
   const [show, setShow] = useState(false);
   const [idNum, setIdNum] = useState(1);
   const [dropDownWidth, setDropDownWidth] = useState({width: 100, display: 'inline'});
@@ -36,6 +37,15 @@ function DataTable() {
   useEffect(()=>{
     getDataList();
   },[]);
+
+  useEffect(()=>{
+    if(view === true){
+      setTableClass("Simple");
+    }
+    else if (view === false){
+      setTableClass("Expanded");
+    } 
+  },[view]);
 
   useEffect(()=>{
     let tableWidth = ref.current.offsetWidth;
@@ -67,16 +77,6 @@ function DataTable() {
     setData(segment === 'all'? data : data.filter(dt => dt["Main Users of Data"] === segment));
     oldSeg = segment;
   }, [segment]);
-  
-
-  // useEffect(()=>{
-  //   if (checker === 0) {
-  //     setFontSize(15);
-  //   }
-  //   if (checker === 1) {
-  //     setFontSize(20);
-  //   }
-  // },[checker]);
   
   const getDataList=()=> {
     fetch(URL).then(resp=>resp.json())
@@ -159,9 +159,10 @@ function DataTable() {
   }
 
   return (
-    <div className="App" ref={ref}>
+    <div className={tableClass} ref={ref}>
       <MaterialTable
         title={title}
+        className={tableClass}
         data={Array.from(data)}
         columns={getColumns()}
         options={options}
@@ -175,7 +176,7 @@ function DataTable() {
           ),
           Toolbar: props => (
             <div style={{ backgroundColor: '#e8eaf5' }}>
-              <MTableToolbar {...props} classes={{ root: "my-temp-class" }} />
+              <MTableToolbar {...props} classes={{ root: "fontHandler" }} />
             </div>
           )
         }}

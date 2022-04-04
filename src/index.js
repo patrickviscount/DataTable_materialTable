@@ -7,7 +7,7 @@ import * as serviceWorker from './serviceWorker';
 ReactDOM.render(
   <React.StrictMode>
     <div style={{width:'100%'}} >
-    <h1 style={{textAlign:'center'}}>Material Table demo</h1>
+    <h1 style={{textAlign:'center', fontSize:'20px'}}>Axis Information Table </h1>
     <App />
     </div>
   </React.StrictMode>,
