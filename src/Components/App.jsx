@@ -4,6 +4,7 @@ import MaterialTable, {MTableToolbar} from "material-table";
 import { Checkbox, Select, MenuItem, TablePagination } from "@material-ui/core";
 import Modal from "./Modal";
 import useWindowDimensions from "./WindowsDimentionsHook";
+import props from 'prop-types';
 const URL = "http://localhost:4000/DataStreams";
 let oldSeg = "all";
 var checker = 1;
@@ -12,6 +13,7 @@ function DataTable() {
 
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState(false);
+  const [CRUD, setCRUD] = useState(false);
   const [view, setView] = useState(true);
   const [segment, setSegment] = useState("all");
   const [tableClass, setTableClass] = useState("Simple");
@@ -31,11 +33,10 @@ function DataTable() {
   });
   const {width, height} = useWindowDimensions();
   const ref = useRef(null);
-  // const [fontSize, setFontSize] = useState(20);
-
 
   useEffect(()=>{
     getDataList();
+    document.body.addEventListener('click', handleCRUD);
   },[]);
 
   useEffect(()=>{
@@ -84,7 +85,14 @@ function DataTable() {
   };
 
   const getColumns = () => {
+
+    if(CRUD === true){
+      return columns;
+    }
+
+    columns[0].hidden = true;
     columns[9].hidden = true;
+    columns[10].hidden = true;
 
     if (checker === 1) {
       columns[0].hidden = true;
@@ -99,7 +107,7 @@ function DataTable() {
   }
 
   const columns = [
-    { title: "ID", field: "id", editable: false, hidden: true},
+    { title: "ID", field: "id", editable: false},
     { title: "Vendor name", field: "Vendor name", render: (rowData) => <p>{handleRender(rowData['Vendor name'])}</p>},
     { title: "Vendor contact", field: "Vendor contact", render: (rowData) => <p>{handleRender(rowData['Vendor contact'])}</p>, cellStyle: {
       backgroundColor: '#FFF'
@@ -124,8 +132,8 @@ function DataTable() {
     { title: "Value Dervied From Data", field: "Value Dervied From Data", render: (rowData) => <p>{handleRender(rowData['Value Dervied From Data'])}</p>, cellStyle: {
       backgroundColor: '#FFF'
   }},
-    { title: "Contracts in Zycus", field: "Contracts in Zycus", hidden: true, render: (rowData) => <p>{handleRender(rowData['Contracts in Zycus'])}</p>},
-    { title: "IT Source", field: "IT Source", hidden: true, hiddenByColumnsButton: true, render: (rowData) => <p>{handleRender(rowData['IT Source'])}</p>}
+    { title: "Contracts in Zycus", field: "Contracts in Zycus", render: (rowData) => <p>{handleRender(rowData['Contracts in Zycus'])}</p>},
+    { title: "IT Source", field: "IT Source", render: (rowData) => <p>{handleRender(rowData['IT Source'])}</p>}
   ];
 
   function handleClickModal(Id) {
@@ -134,13 +142,60 @@ function DataTable() {
   }
 
   function handleRender(str) {
+    if(str){
     if(str.length > 100){
       let temp = str.slice(0, 99);
       temp = temp + '...';
       return temp;
     }
+  }
 
     return str;
+  }
+
+  // const handleGG = (Id) => {
+  //   console.log(Id);
+  //   console.log(props);
+  //   let g = (document.querySelectorAll('button'));
+  //   for (let i = 0; i < g.length; i++){
+  //     if(g[i].title === 'Edit') {
+  //       // g.addEventListener('click', handleCRUD);
+  //       console.log('hit');
+  //     }
+  //   }
+  //   console.log(g, g[8].title);
+  //   // props.actions[1]().onClick(e, props.data);
+  // }
+
+  async function handleCRUD(infoz) {
+    console.log(infoz)
+    setTimeout(function(){
+      let CRUDrows = document.querySelectorAll('.Mui-selected');
+      if (CRUDrows.length > 0){
+        setCRUD(true);
+      }
+      else{
+        setCRUD(false);
+      }
+   }, 1);
+
+   setTimeout(function(){
+    let g = (document.querySelectorAll('button'));
+    let CRUDrows = document.querySelectorAll('.Mui-selected');
+    if(CRUD == true && CRUDrows.length < 1){
+      console.log('we made it');
+    }
+    let butt = g[8];
+    for (let i = 0; i < g.length; i++){
+      if(g[i].title === 'Edit') {
+        // g.addEventListener('click', handleCRUD);
+        // console.log('hit');
+      }
+    }
+    // console.log(butt);
+    // console.log(g);
+    // butt.click();
+ }, 1);
   }
 
   const handleColumns = () => {
@@ -166,7 +221,7 @@ function DataTable() {
         data={Array.from(data)}
         columns={getColumns()}
         options={options}
-            
+
         components={{
           Pagination: props => (
             <TablePagination
@@ -265,6 +320,11 @@ function DataTable() {
           tooltip: 'More Info',
           onClick: (rowData, event) => {handleClickModal(event.id)}
       },
+    //   {
+    //     icon: 'cloud',
+    //     tooltip: 'More Info',
+    //     onClick: (rowData, event) => {handleGG(event)}
+    // },
       ]}
       />
       <Modal
