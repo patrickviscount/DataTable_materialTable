@@ -40,13 +40,16 @@ function DataTable() {
   },[]);
 
   useEffect(()=>{
-    if(view === true){
+    if(CRUD === true){
+      setTableClass("All")
+    }
+    else if(view === true){
       setTableClass("Simple");
     }
     else if (view === false){
       setTableClass("Expanded");
     } 
-  },[view]);
+  },[view, CRUD]);
 
   useEffect(()=>{
     let tableWidth = ref.current.offsetWidth;
@@ -85,14 +88,31 @@ function DataTable() {
   };
 
   const getColumns = () => {
+    var realCols = [];
 
     if(CRUD === true){
+      for (let j = 0; j < columns.length; j++){
+
+        if(columns.indexOf(columns[j]) % 2 == 1){
+          columns[j].cellStyle = {backgroundColor: '#FFF'};
+        }
+        else{
+          columns[j].cellStyle = {backgroundColor: '#F1F1F0'};
+        }
+      }
       return columns;
     }
 
     columns[0].hidden = true;
     columns[9].hidden = true;
     columns[10].hidden = true;
+    if (checker === 0) {
+      for(let i = 0; i < columns.length; i++){
+        if (columns[i].hidden !== true){
+          realCols.push(columns[i]);
+        }
+      }
+    }
 
     if (checker === 1) {
       columns[0].hidden = true;
@@ -100,10 +120,23 @@ function DataTable() {
       columns[3].hidden = true;
       columns[8].hidden = true;
       columns[9].hidden = true;
-      // console.log(columns);
-      // columns[2].cellStyle={backgroundColor: '#fff'};
+      for(let i = 0; i < columns.length; i++){
+        if (columns[i].hidden !== true){
+          realCols.push(columns[i]);
+        }
+      }
     }
-    return columns;
+
+    for (let j = 0; j < realCols.length; j++){
+
+      if(realCols.indexOf(realCols[j]) % 2 == 1){
+        realCols[j].cellStyle = {backgroundColor: '#FFF'};
+      }
+      else{
+        realCols[j].cellStyle = {backgroundColor: '#F1F1F0'};
+      }
+    }
+    return realCols;
   }
 
   const columns = [
@@ -153,49 +186,35 @@ function DataTable() {
     return str;
   }
 
-  // const handleGG = (Id) => {
-  //   console.log(Id);
-  //   console.log(props);
-  //   let g = (document.querySelectorAll('button'));
-  //   for (let i = 0; i < g.length; i++){
-  //     if(g[i].title === 'Edit') {
-  //       // g.addEventListener('click', handleCRUD);
-  //       console.log('hit');
-  //     }
-  //   }
-  //   console.log(g, g[8].title);
-  //   // props.actions[1]().onClick(e, props.data);
-  // }
-
   async function handleCRUD(infoz) {
-    console.log(infoz)
+    // console.log(infoz)
+    // console.log(infoz.path[2].innerText)
     setTimeout(function(){
       let CRUDrows = document.querySelectorAll('.Mui-selected');
-      if (CRUDrows.length > 0){
+      if (CRUDrows.length > 0 && !(infoz.path[2].innerText === 'edit' || infoz.path[2].innerText === 'delete_outline' || infoz.path[2].innerText === 'clear')){
         setCRUD(true);
       }
       else{
         setCRUD(false);
       }
-   }, 1);
+      // if( infoz.path[2].innerText === 'edit' || infoz.path[2].innerText === 'delete')
+      //{
+        // setTimeout(function(){
+        //   let button = infoz.path[2];
+        //   let test = document.querySelectorAll('button');
+        //   for (let i = 0; i < test.length; i++){
+        //     console.log(test[i]);
+        //     console.log(button);
+        //     if (test[i] == button) {
+        //       console.log('success!')
+        //     }
+        //   }
 
-   setTimeout(function(){
-    let g = (document.querySelectorAll('button'));
-    let CRUDrows = document.querySelectorAll('.Mui-selected');
-    if(CRUD == true && CRUDrows.length < 1){
-      console.log('we made it');
-    }
-    let butt = g[8];
-    for (let i = 0; i < g.length; i++){
-      if(g[i].title === 'Edit') {
-        // g.addEventListener('click', handleCRUD);
-        // console.log('hit');
-      }
-    }
-    // console.log(butt);
-    // console.log(g);
-    // butt.click();
- }, 1);
+        //   console.log(test);
+        //   test[19].click();
+        // }, 2000)
+      //}
+   }, 1);
   }
 
   const handleColumns = () => {
@@ -211,6 +230,7 @@ function DataTable() {
 
   const handleCheck = () => {
     setFilter(!filter);
+    setOptions({...options, filtering: !filter});
   }
 
   return (
@@ -285,6 +305,24 @@ function DataTable() {
           </ button>,
           isFreeAction: true 
         },
+        // {
+        //   icon: () => 
+        //   <Select
+        //   labelId="demo-simple-select-labelz"
+        //   id="demo-select-simplez"
+        //   style={dropDownWidth}
+        //   value={tableClass}
+        //   onChange={(e) => {
+        //     handleColumns(e.target.value);
+        //   }}
+        //   >
+        //   <MenuItem value={"Simple"}> Simple </MenuItem>
+        //   <MenuItem value={"Expanded"}> Expanded </MenuItem>
+        //   <MenuItem value={"All"}> All </MenuItem>
+        //   </Select>,
+        //   tooltip: "Filter Columns",
+        //   isFreeAction: true
+        // },
         {
         icon:() => 
         <Checkbox
@@ -320,11 +358,6 @@ function DataTable() {
           tooltip: 'More Info',
           onClick: (rowData, event) => {handleClickModal(event.id)}
       },
-    //   {
-    //     icon: 'cloud',
-    //     tooltip: 'More Info',
-    //     onClick: (rowData, event) => {handleGG(event)}
-    // },
       ]}
       />
       <Modal
