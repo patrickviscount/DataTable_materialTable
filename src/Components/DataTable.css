@@ -67,7 +67,9 @@
     background: #00A1F1;
     color: black;
     z-index: 1;
-}
+    margin: 10%;
+    padding: 1%;
+  }
 
 .columnsButton:after {
  position: absolute;

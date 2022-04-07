@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./App.css";
+import "./DataTable.css";
 import MaterialTable, {MTableToolbar} from "material-table";
 import { Checkbox, Select, MenuItem, TablePagination } from "@material-ui/core";
 import Modal from "./Modal";
 import useWindowDimensions from "./WindowsDimentionsHook";
-import props from 'prop-types';
 const URL = "http://localhost:4000/DataStreams";
 let oldSeg = "all";
 var checker = 1;
@@ -20,6 +19,7 @@ function DataTable() {
   const [show, setShow] = useState(false);
   const [idNum, setIdNum] = useState(1);
   const [dropDownWidth, setDropDownWidth] = useState({width: 100, display: 'inline'});
+  const [ColumnsButtonStyle, setColumnsButtonStyle] = useState({marginTop: '5%', ariaLabel: 'primary checkbox'});
   const [title, setTitle] = useState('3rd Party Data Vendors');
   const [options, setOptions] = useState({
     actionsColumnIndex: -1,
@@ -38,6 +38,17 @@ function DataTable() {
     getDataList();
     document.body.addEventListener('click', handleCRUD);
   },[]);
+
+  useEffect(()=>{
+    setTimeout(function(){
+      let test = document.querySelectorAll('button');
+      for (let i = 0; i < test.length; i++){
+        if (test[i].innerText === 'edit') {
+          test[i].addEventListener('click', () => handleCRUD(i));
+        }
+      }
+    }, 500)
+  },[CRUD]);
 
   useEffect(()=>{
     if(CRUD === true){
@@ -59,17 +70,23 @@ function DataTable() {
     if (tableWidth > 975){
       setTitle('3rd Party Data Vendors');  
     }
-    if (tableWidth < 740){
+    if (tableWidth < 764){
       options.search = false;
     }
-    if (tableWidth > 740){
+    if (tableWidth > 764){
       options.search = true;
     }
-    if (tableWidth < 422){
+    if (tableWidth < 455){
       setDropDownWidth({width: 0, display: 'none'});
     }
-    if (tableWidth > 422){
+    if (tableWidth > 455){
       setDropDownWidth({width: 100, display: 'inline'});
+    }
+    if (tableWidth > 325){
+      setColumnsButtonStyle({width: 100, display: 'inline', marginTop: '5%', ariaLabel: 'primary checkbox'});
+    }
+    if (tableWidth < 325){
+      setColumnsButtonStyle({width: 100, display: 'none', marginTop: '5%', ariaLabel: 'primary checkbox'});
     }
   },[width, height]);
 
@@ -186,35 +203,40 @@ function DataTable() {
     return str;
   }
 
-  async function handleCRUD(infoz) {
-    // console.log(infoz)
-    // console.log(infoz.path[2].innerText)
-    setTimeout(function(){
-      let CRUDrows = document.querySelectorAll('.Mui-selected');
-      if (CRUDrows.length > 0 && !(infoz.path[2].innerText === 'edit' || infoz.path[2].innerText === 'delete_outline' || infoz.path[2].innerText === 'clear')){
-        setCRUD(true);
-      }
-      else{
-        setCRUD(false);
-      }
-      // if( infoz.path[2].innerText === 'edit' || infoz.path[2].innerText === 'delete')
-      //{
-        // setTimeout(function(){
-        //   let button = infoz.path[2];
-        //   let test = document.querySelectorAll('button');
-        //   for (let i = 0; i < test.length; i++){
-        //     console.log(test[i]);
-        //     console.log(button);
-        //     if (test[i] == button) {
-        //       console.log('success!')
-        //     }
-        //   }
+  function handleCRUD(clickInformation) {
 
-        //   console.log(test);
-        //   test[19].click();
-        // }, 2000)
-      //}
-   }, 1);
+    if(clickInformation > 0 || clickInformation < 200) {
+      menz(clickInformation);
+  }
+    else{
+      setTimeout(function(){
+        let CRUDrows = document.querySelectorAll('.Mui-selected');
+        if (clickInformation.path[2].innerText > 0){
+          setCRUD(true);
+          setCRUD(false);
+        } 
+        if ((CRUDrows.length > 0 && ((clickInformation.path[2].innerText === 'add_box') || clickInformation.path[0].innerText === 'add_box')) || clickInformation.path[2].outerText === 'edit' || clickInformation.path[0].outerText === 'edit'){
+          if(CRUD === false){
+            setCRUD(true);
+          }
+        }
+        else{
+          if (CRUDrows.length > 0 ){
+            if(clickInformation.path[0].nodeName != 'INPUT'){
+              setCRUD(false);
+            }
+          }
+          else{
+          setCRUD(false);
+          }
+        }
+    }, 1);
+    }
+  }
+
+  function menz(id){
+    // console.log(`id: ${id}`);
+    setCRUD(true);
   }
 
   const handleColumns = () => {
@@ -300,29 +322,11 @@ function DataTable() {
       actions = {[
         {
           icon:() => 
-          <button className="columnsButton" onClick={handleColumns} style={{marginTop: '5%', ariaLabel: 'primary checkbox'}}>
+          <button className="columnsButton" onClick={handleColumns} style={ColumnsButtonStyle}>
           {view ? 'Show Columns' : 'Hide Columns'}
           </ button>,
           isFreeAction: true 
         },
-        // {
-        //   icon: () => 
-        //   <Select
-        //   labelId="demo-simple-select-labelz"
-        //   id="demo-select-simplez"
-        //   style={dropDownWidth}
-        //   value={tableClass}
-        //   onChange={(e) => {
-        //     handleColumns(e.target.value);
-        //   }}
-        //   >
-        //   <MenuItem value={"Simple"}> Simple </MenuItem>
-        //   <MenuItem value={"Expanded"}> Expanded </MenuItem>
-        //   <MenuItem value={"All"}> All </MenuItem>
-        //   </Select>,
-        //   tooltip: "Filter Columns",
-        //   isFreeAction: true
-        // },
         {
         icon:() => 
         <Checkbox
@@ -391,7 +395,7 @@ function findURL(dataStream) {
       url = data[i];
       return url;
     }
-    else if (data[i].startsWith("mailtdo")) {
+    else if (data[i].startsWith("mailto")) {
       url = data[i];
     }
   }
