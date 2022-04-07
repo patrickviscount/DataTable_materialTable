@@ -206,7 +206,7 @@ function DataTable() {
   function handleCRUD(clickInformation) {
 
     if(clickInformation > 0 || clickInformation < 200) {
-      menz(clickInformation);
+      setCRUD(true);
   }
     else{
       setTimeout(function(){
@@ -232,11 +232,6 @@ function DataTable() {
         }
     }, 1);
     }
-  }
-
-  function menz(id){
-    // console.log(`id: ${id}`);
-    setCRUD(true);
   }
 
   const handleColumns = () => {
