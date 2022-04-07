@@ -50,17 +50,17 @@ function DataTable() {
     }, 500)
   },[CRUD]);
 
-  useEffect(()=>{
-    if(CRUD === true){
-      setTableClass("All")
-    }
-    else if(view === true){
-      setTableClass("Simple");
-    }
-    else if (view === false){
-      setTableClass("Expanded");
-    } 
-  },[view, CRUD]);
+  // useEffect(()=>{
+  //   if(CRUD === true){
+  //     setTableClass("All")
+  //   }
+  //   else if(view === true){
+  //     setTableClass("Simple");
+  //   }
+  //   else if (view === false){
+  //     setTableClass("Expanded");
+  //   } 
+  // },[view, CRUD]);
 
   useEffect(()=>{
     let tableWidth = ref.current.offsetWidth;
