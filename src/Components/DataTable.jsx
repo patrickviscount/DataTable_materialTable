@@ -3,7 +3,7 @@ import "./DataTable.css";
 import MaterialTable, {MTableToolbar} from "material-table";
 import { Checkbox, Select, MenuItem, TablePagination } from "@material-ui/core";
 import Modal from "./Modal";
-import useWindowDimensions from "./WindowsDimentionsHook";
+import useWindowDimensions from "./Hooks/useWindowsDimensions";
 const URL = "http://localhost:4000/DataStreams";
 let oldSeg = "all";
 var checker = 1;
@@ -33,12 +33,28 @@ function DataTable() {
   });
   const {width, height} = useWindowDimensions();
   const ref = useRef(null);
+  let oldClick = 9999;
 
+  //Gets the data to load he table, and adds an event listen for all clicks
   useEffect(()=>{
     getDataList();
     document.body.addEventListener('click', handleCRUD);
   },[]);
 
+  //Handles font size by assigning css depending on columns view
+    useEffect(()=>{
+    if(CRUD === true){
+      setTableClass("All")
+    }
+    else if(view === true){
+      setTableClass("Simple");
+    }
+    else if (view === false){
+      setTableClass("Expanded");
+    } 
+  },[view, CRUD]);
+
+  //Adds an extra event listener for all edit buttons to load all columns
   useEffect(()=>{
     setTimeout(function(){
       let test = document.querySelectorAll('button');
@@ -50,18 +66,7 @@ function DataTable() {
     }, 500)
   },[CRUD]);
 
-  // useEffect(()=>{
-  //   if(CRUD === true){
-  //     setTableClass("All")
-  //   }
-  //   else if(view === true){
-  //     setTableClass("Simple");
-  //   }
-  //   else if (view === false){
-  //     setTableClass("Expanded");
-  //   } 
-  // },[view, CRUD]);
-
+  //Rendering and hiding table header functionality to avoid breaking on smaller screen sizes
   useEffect(()=>{
     let tableWidth = ref.current.offsetWidth;
     if (tableWidth < 975){
@@ -90,6 +95,7 @@ function DataTable() {
     }
   },[width, height]);
 
+  //Handles row rendering when filtering through the drop down menu
   useEffect(() => {
     if((segment !== "all" && oldSeg !== "all") || (segment === "all" && oldSeg !== "all")) {
       getDataList();
@@ -99,11 +105,14 @@ function DataTable() {
     oldSeg = segment;
   }, [segment]);
   
+  //API call for data
   const getDataList=()=> {
     fetch(URL).then(resp=>resp.json())
     .then(resp=>setData(resp))
   };
 
+  //The function drives column rendering, simple, expanded or all views
+  //Don't set columns.hidden to false, or table will break
   const getColumns = () => {
     var realCols = [];
 
@@ -186,11 +195,14 @@ function DataTable() {
     { title: "IT Source", field: "IT Source", render: (rowData) => <p>{handleRender(rowData['IT Source'])}</p>}
   ];
 
+  //Renders the modal with the passed row id number
   function handleClickModal(Id) {
     setIdNum(Id);
     setShow(!show);
   }
 
+  //This function verifies that the cell contents are 100 characters or less, otherwise it cuts it to 100
+  //This is to avoid a large wall of text taking up too much space
   function handleRender(str) {
     if(str){
     if(str.length > 100){
@@ -199,34 +211,44 @@ function DataTable() {
       return temp;
     }
   }
-
     return str;
   }
 
+  //Handles going into and getting out of CRUD functionality, by checking where a person is clicking
   function handleCRUD(clickInformation) {
-
     if(clickInformation > 0 || clickInformation < 200) {
       setCRUD(true);
   }
     else{
       setTimeout(function(){
-        let CRUDrows = document.querySelectorAll('.Mui-selected');
-        if (clickInformation.path[2].innerText > 0){
+        let CRUDrows = document.querySelectorAll('.Mui-selected'); //This css style only applies when a CRUD function is happening
+        if (clickInformation.path[2].innerText > 0){ //This happens when a pagination number is clicked, needed this to refresh the edit botten click events
           setCRUD(true);
           setCRUD(false);
         } 
-        if ((CRUDrows.length > 0 && ((clickInformation.path[2].innerText === 'add_box') || clickInformation.path[0].innerText === 'add_box')) || clickInformation.path[2].outerText === 'edit' || clickInformation.path[0].outerText === 'edit'){
-          if(CRUD === false){
-            setCRUD(true);
+        let saviorRow = 0;
+        const allRows = document.querySelectorAll('tr');
+        for(let i =1; i < allRows.length-1; i++){
+          if(allRows[i].className === 'MuiTableRow-root') {
+          saviorRow = i;
           }
+        }
+        let top = allRows[saviorRow].getBoundingClientRect().top;
+        if((clickInformation.clientY > top && clickInformation.clientY < top + 65) || (clickInformation.clientY.between(oldClick+30, oldClick-30))) {
+          oldClick = clickInformation.clientY;
+        }
+        else if ((CRUDrows.length > 0 && ((clickInformation.path[2].innerText === 'add_box') || clickInformation.path[0].innerText === 'add_box')) || clickInformation.path[2].outerText === 'edit' || clickInformation.path[0].outerText === 'edit'){
+          //If rows exist and a add row or edit row button is clicked  
+          setCRUD(true);
         }
         else{
           if (CRUDrows.length > 0 ){
-            if(clickInformation.path[0].nodeName != 'INPUT'){
+            if(clickInformation.path[0].nodeName != 'INPUT' && clickInformation.path[0].tagName != "TR"){
+              //If the user clicks outside of a row input or a row itself
               setCRUD(false);
             }
           }
-          else{
+        else{
           setCRUD(false);
           }
         }
@@ -234,6 +256,13 @@ function DataTable() {
     }
   }
 
+  Number.prototype.between = function(a, b) {
+    var min = Math.min.apply(Math, [a, b]),
+      max = Math.max.apply(Math, [a, b]);
+    return this > min && this < max;
+  };
+
+  //This function flips a boolean and calls the columns function
   const handleColumns = () => {
     setView(!view);
     if(checker === 0){
@@ -245,6 +274,7 @@ function DataTable() {
     getColumns();
   }
 
+  //This function handles the filtering checkbox by checking the box, and enabling the filtering functionality
   const handleCheck = () => {
     setFilter(!filter);
     setOptions({...options, filtering: !filter});
@@ -252,7 +282,7 @@ function DataTable() {
 
   return (
     <div className={tableClass} ref={ref}>
-      <MaterialTable
+      <MaterialTable //Actual Table call, most passed in variables can be changed via setState
         title={title}
         className={tableClass}
         data={Array.from(data)}
@@ -260,12 +290,14 @@ function DataTable() {
         options={options}
 
         components={{
+          //Sets the pagination dropdown
           Pagination: props => (
             <TablePagination
               {...props}
               rowsPerPageOptions={[5, 10, 20, 50, { value: data.length, label: 'All' }]}
             />
           ),
+          //This was to properly style the header
           Toolbar: props => (
             <div style={{ backgroundColor: '#e8eaf5' }}>
               <MTableToolbar {...props} classes={{ root: "fontHandler" }} />
@@ -273,6 +305,8 @@ function DataTable() {
           )
         }}
 
+        //These are all for when any row is added, deleted or edited.
+        //generally, these functions just pass along that information to the API endpoint
         editable={{
           onRowAdd: (newRow) =>
             new Promise((resolve, reject) => {
@@ -314,15 +348,16 @@ function DataTable() {
         }
       }
 
+      //Header buttons / functionality
       actions = {[
-        {
+        { //Columns simple / expanded views button
           icon:() => 
           <button className="columnsButton" onClick={handleColumns} style={ColumnsButtonStyle}>
           {view ? 'Show Columns' : 'Hide Columns'}
           </ button>,
           isFreeAction: true 
         },
-        {
+        { // Filtering checkbox 
         icon:() => 
         <Checkbox
         checked = {filter}
@@ -333,7 +368,7 @@ function DataTable() {
         tooltip:"Hide/Show Filter",
         isFreeAction: true
         },
-        {
+        { // Drop down filtering
           icon: () => 
           <Select
           labelId="demo-simple-select-label"
@@ -352,14 +387,15 @@ function DataTable() {
           tooltip: "Filter Users of Data",
           isFreeAction: true
         },
-        {
+        { //Modal button
           icon: 'info',
           tooltip: 'More Info',
           onClick: (rowData, event) => {handleClickModal(event.id)}
       },
       ]}
       />
-      <Modal
+
+      <Modal  //The modal, its hidden until the more info button is clicked
         show={show}
         idNumber={idNum}
         onClose={() => setShow(false)}
@@ -368,6 +404,7 @@ function DataTable() {
   );
 }
 
+//This function goes from 1 to row.length to fund the first id number not in use
 function findID(dataStream) {
   let data = dataStream.sort((a, b) => a.id - b.id);
   let id = 1;
@@ -380,6 +417,7 @@ function findID(dataStream) {
   return id;
 }
 
+//This function looks into the links cell to fund a suitable link, mail address or redirects to Axis homepage
 function findURL(dataStream) {
   if (dataStream.WorkdayLink) {
   let data = dataStream.WorkdayLink.split(" ");

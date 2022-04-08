@@ -8,18 +8,20 @@ const Modal = (props) => {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
   
+    //gets information to populate modal
     function getDataList() {
       fetch(`${URL}/${ID}`).then(resp=>resp.json())
       .then(resp=>setData(resp));
         setLoading(false);
     }
-
+    //escape key closes modal
     const closeOnEsc = (e) => {
         if((e.charCode || e.keyCode) === 27){
             props.onClose();
         }
     }
 
+    //loading until data is finished populating
     useEffect(() => {
         setLoading(true);
         getDataList();
@@ -29,6 +31,7 @@ const Modal = (props) => {
         }
     }, [])
 
+    //updates data when props change
     useEffect(() => {
         getDataList();
     }, [props])
@@ -76,6 +79,7 @@ const Modal = (props) => {
     )
 }
 
+//this function finds workday / mail urls or redirects to axis home page
 function findURL(dataStream) {
     if (dataStream.WorkdayLink) {
     let data = dataStream.WorkdayLink.split(" ");
