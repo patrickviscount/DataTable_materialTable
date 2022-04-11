@@ -12,7 +12,7 @@ const Modal = (props) => {
     function getDataList() {
       fetch(`${URL}/${ID}`).then(resp=>resp.json())
       .then(resp=>setData(resp)).catch(error => {
-        setData([
+        setData(
           {
             "id": 1,
             "Vendor name": "Petah INC",
@@ -27,37 +27,7 @@ const Modal = (props) => {
             "IT Source": "MASHws",
             "TechLeadLink": "mailto:google@google.com",
             "BusinessContactLink": "nothjign imporetant here"
-          },
-          {
-            "id": 2,
-            "Vendor name": "PEOPLE INC",
-            "Vendor contact": "peterZon@poeple.com",
-            "Buisness Unit Acquiring": "Cyber and Tech",
-            "Lead Data Steward": "Cyotes",
-            "Business Contact": "John Jhon",
-            "Main Users of Data": "Re-insurance",
-            "Brief Desc of Data Used": "Criminal Check",
-            "Value Dervied From Data": "Risk Assesment",
-            "Contracts in Zycus": "ZOOM13Z",
-            "IT Source": "HERE",
-            "TechLeadLink": "https://www.myworkday.com/axiscapital/d/inst/1$17/247$5193.htmld#TABINDEX=0&SUBTABINDEX=0",
-            "BusinessContactLink": "mailto:google@google.com"
-          },
-          {
-            "id": 3,
-            "Vendor name": "3 INC",
-            "Vendor contact": "3@testeremailnotreal.com",
-            "Buisness Unit Acquiring": "Insurance",
-            "Lead Data Steward": "Patriots",
-            "Business Contact": "Scott Thomas",
-            "Main Users of Data": "Admin",
-            "Brief Desc of Data Used": "Counting services",
-            "Value Dervied From Data": "IT",
-            "Contracts in Zycus": "09JHKH09",
-            "IT Source": "Hola!",
-            "TechLeadLink": "https://www.myworkday.com/axiscapital/d/inst/1$17/247$5193.htmld#TABINDEX=0&SUBTABINDEX=0",
-            "BusinessContactLink": "nothjign imporetant here"
-          }])
+          })
       });
         setLoading(false);
     }

@@ -11,6 +11,11 @@
   height: clamp(30px, 64px, 100px) !important;
 }
 
+/* .MuiToolbar-gutters {
+  background-color: grey !important;
+  content: 'asodihaosid' !important;
+} */
+
 /* .MuiToolbar-root{
   max-height: 10vh;
 } */

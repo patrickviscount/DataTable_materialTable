@@ -21,6 +21,7 @@ function DataTable() {
   const [dropDownWidth, setDropDownWidth] = useState({width: 100, display: 'inline'});
   const [ColumnsButtonStyle, setColumnsButtonStyle] = useState({marginTop: '5%', ariaLabel: 'primary checkbox'});
   const [title, setTitle] = useState('3rd Party Data Vendors');
+  const [hardCoded, setHardCoded] = useState(false);
   const [options, setOptions] = useState({
     actionsColumnIndex: -1,
     actionsCellStyle: {justifyContent: "center"},
@@ -40,6 +41,13 @@ function DataTable() {
     getDataList();
     document.body.addEventListener('click', handleCRUD);
   },[]);
+
+  useEffect(()=>{
+    if (hardCoded === true){
+      alert("This table has been loaded with static data for demonstrational purposes and many features such as the modal pop up and the CRUD functionality may not work as expected.")
+    }
+  },[hardCoded]);
+
 
   //Handles font size by assigning css depending on columns view
     useEffect(()=>{
@@ -155,6 +163,7 @@ function DataTable() {
             "TechLeadLink": "https://www.myworkday.com/axiscapital/d/inst/1$17/247$5193.htmld#TABINDEX=0&SUBTABINDEX=0",
             "BusinessContactLink": "nothjign imporetant here"
           }])
+          setHardCoded(true);
     })
   };
 
@@ -222,14 +231,14 @@ function DataTable() {
     {
       title: "Lead Data Steward",
       field: "Lead Data Steward",
-      render: (rowData) => <a href={`${findURL(rowData)}`} target="_blank" rel="noopener noreferrer"> {handleRender(rowData["Lead Data Steward"])} </a>, cellStyle: {
+      render: (rowData) => <a href={`${findURL(rowData, 1)}`} target="_blank" rel="noopener noreferrer"> {handleRender(rowData["Lead Data Steward"])} </a>, cellStyle: {
         backgroundColor: '#FFF'
     }
     },
     {
       title: "Business Contact",
       field: "Business Contact",
-      render: (rowData) => <a href={`${findURL(rowData)}`} target="_blank" rel="noopener noreferrer"> {handleRender(rowData["Business Contact"])} </a>
+      render: (rowData) => <a href={`${findURL(rowData, 2)}`} target="_blank" rel="noopener noreferrer"> {handleRender(rowData["Business Contact"])} </a>
     },
     { title: "Main Users of Data", field: "Main Users of Data", render: (rowData) => <p>{handleRender(rowData['Main Users of Data'])}</p>, cellStyle: {
       backgroundColor: '#FFF'
@@ -465,9 +474,19 @@ function findID(dataStream) {
 }
 
 //This function looks into the links cell to fund a suitable link, mail address or redirects to Axis homepage
-function findURL(dataStream) {
-  if (dataStream.WorkdayLink) {
-  let data = dataStream.WorkdayLink.split(" ");
+function findURL(dataStream, columnNumber) {
+  let information = '';
+  if (columnNumber === 2 && dataStream.TechLeadLink){
+    information = dataStream.TechLeadLink;
+  }
+  else if (columnNumber === 1 && dataStream.BusinessContactLink){
+    information = dataStream.BusinessContactLink;
+  }
+  else if(dataStream.WorkdayLink){
+    information = dataStream.WorkdayLink;
+  }
+  if (information) {
+  let data = information.split(" ");
   let url = "";
   
   for (let i = 0; i < data.length; i++) {
