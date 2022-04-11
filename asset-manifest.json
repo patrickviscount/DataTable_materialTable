@@ -1,0 +1,31 @@
+{
+  "files": {
+    "main.css": "/DataTable_materialTable/static/css/main.f6619852.chunk.css",
+    "main.js": "/DataTable_materialTable/static/js/main.26369413.chunk.js",
+    "main.js.map": "/DataTable_materialTable/static/js/main.26369413.chunk.js.map",
+    "runtime-main.js": "/DataTable_materialTable/static/js/runtime-main.f664abc7.js",
+    "runtime-main.js.map": "/DataTable_materialTable/static/js/runtime-main.f664abc7.js.map",
+    "static/js/2.308147ce.chunk.js": "/DataTable_materialTable/static/js/2.308147ce.chunk.js",
+    "static/js/2.308147ce.chunk.js.map": "/DataTable_materialTable/static/js/2.308147ce.chunk.js.map",
+    "static/js/3.723552d5.chunk.js": "/DataTable_materialTable/static/js/3.723552d5.chunk.js",
+    "static/js/3.723552d5.chunk.js.map": "/DataTable_materialTable/static/js/3.723552d5.chunk.js.map",
+    "static/js/4.73c9fca0.chunk.js": "/DataTable_materialTable/static/js/4.73c9fca0.chunk.js",
+    "static/js/4.73c9fca0.chunk.js.map": "/DataTable_materialTable/static/js/4.73c9fca0.chunk.js.map",
+    "static/js/5.ce3af5bc.chunk.js": "/DataTable_materialTable/static/js/5.ce3af5bc.chunk.js",
+    "static/js/5.ce3af5bc.chunk.js.map": "/DataTable_materialTable/static/js/5.ce3af5bc.chunk.js.map",
+    "index.html": "/DataTable_materialTable/index.html",
+    "precache-manifest.673b66e62965ce45181c38091989c0fc.js": "/DataTable_materialTable/precache-manifest.673b66e62965ce45181c38091989c0fc.js",
+    "service-worker.js": "/DataTable_materialTable/service-worker.js",
+    "static/css/main.f6619852.chunk.css.map": "/DataTable_materialTable/static/css/main.f6619852.chunk.css.map",
+    "static/js/2.308147ce.chunk.js.LICENSE.txt": "/DataTable_materialTable/static/js/2.308147ce.chunk.js.LICENSE.txt",
+    "static/js/3.723552d5.chunk.js.LICENSE.txt": "/DataTable_materialTable/static/js/3.723552d5.chunk.js.LICENSE.txt",
+    "static/js/4.73c9fca0.chunk.js.LICENSE.txt": "/DataTable_materialTable/static/js/4.73c9fca0.chunk.js.LICENSE.txt",
+    "static/js/5.ce3af5bc.chunk.js.LICENSE.txt": "/DataTable_materialTable/static/js/5.ce3af5bc.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.f664abc7.js",
+    "static/js/3.723552d5.chunk.js",
+    "static/css/main.f6619852.chunk.css",
+    "static/js/main.26369413.chunk.js"
+  ]
+}
