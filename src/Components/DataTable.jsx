@@ -4,7 +4,7 @@ import MaterialTable, {MTableToolbar} from "material-table";
 import { Checkbox, Select, MenuItem, TablePagination } from "@material-ui/core";
 import Modal from "./Modal";
 import useWindowDimensions from "./Hooks/useWindowsDimensions";
-const URL = "http://localhost:4000/DataStreams";
+const URL = "http://localhost:4000/DataStreams"; //https://patrickviscount.github.io/DataTable_MaterialTable_JSONAPI/db.json
 let oldSeg = "all";
 var checker = 1;
 
@@ -30,7 +30,7 @@ function DataTable() {
     search: true,
     draggable: true,
     paginationType: "stepped",
-    pageSize: 5
+    pageSize: getPageSize(data)
   });
   const {width, height} = useWindowDimensions();
   const ref = useRef(null);
@@ -76,7 +76,14 @@ function DataTable() {
 
   //Rendering and hiding table header functionality to avoid breaking on smaller screen sizes
   useEffect(()=>{
-    let tableWidth = ref.current.offsetWidth;
+    let tableWidth = ref.current.offsetWidth
+    let num = parseInt(document.documentElement.childNodes[2].childNodes[9].firstChild.firstChild.firstChild.style.width.match(/\d+/g));
+    console.log(num)
+    console.log(tableWidth)
+    if(num){
+    tableWidth = tableWidth * (0.01 * num);
+    console.log("With num added " +  tableWidth)
+    }
     if (tableWidth < 975){
       setTitle('');
     }
@@ -175,7 +182,7 @@ function DataTable() {
     if(CRUD === true){
       for (let j = 0; j < columns.length; j++){
 
-        if(columns.indexOf(columns[j]) % 2 == 1){
+        if(columns.indexOf(columns[j]) % 2 === 1){
           columns[j].cellStyle = {backgroundColor: '#FFF'};
         }
         else{
@@ -211,7 +218,7 @@ function DataTable() {
 
     for (let j = 0; j < realCols.length; j++){
 
-      if(realCols.indexOf(realCols[j]) % 2 == 1){
+      if(realCols.indexOf(realCols[j]) % 2 === 1){
         realCols[j].cellStyle = {backgroundColor: '#FFF'};
       }
       else{
@@ -299,7 +306,7 @@ function DataTable() {
         }
         else{
           if (CRUDrows.length > 0 ){
-            if(clickInformation.path[0].nodeName != 'INPUT' && clickInformation.path[0].tagName != "TR"){
+            if(clickInformation.path[0].nodeName !== 'INPUT' && clickInformation.path[0].tagName !== "TR"){
               //If the user clicks outside of a row input or a row itself
               setCRUD(false);
             }
@@ -471,6 +478,20 @@ function findID(dataStream) {
     }
   }
   return id;
+}
+
+function getPageSize(data) {
+  if(data.length > 0) {  
+    if(data.length > 10){
+      return 10
+    }
+    else {
+      return data.length;
+    }
+  }
+  else {
+    return 5;
+  }
 }
 
 //This function looks into the links cell to fund a suitable link, mail address or redirects to Axis homepage

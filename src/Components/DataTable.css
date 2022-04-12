@@ -1,10 +1,10 @@
 
 .Simple {
-  font-size: clamp(10px, calc( 10px + (24 - 21) * (125vw - 300px) / 400), 20px);
+  font-size: clamp(10px, calc( 9px + (24 - 21) * (125vw - 300px) / 400), 20px);
 }
 
 .Expanded {
-  font-size: clamp(10px, calc( 8px + (24 - 21) * (125vw - 300px) / 400), 18px);
+  font-size: clamp(10px, calc( 7px + (24 - 21) * (125vw - 300px) / 400), 18px);
 }
 
 .fontHandler {

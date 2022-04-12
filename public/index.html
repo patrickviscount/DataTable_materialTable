@@ -32,10 +32,19 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+    <script>var tableWidth = 10;</script> 
     <title>DataTable</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+
+    <h1 style= text-align:center , fontSize:20px>Axis Information Table </h1>
+    <form name="registrationForm" style= text-align:center>
+    <input type="range" name="ageInputName" id="ageInputId" value="100" min="1" max="100" oninput="ageOutputId.value = ageInputId.value, document.documentElement.childNodes[2].childNodes[9].firstChild.firstChild.firstChild.style.width= ageInputId.value + '%'">
+    <output name="ageOutputName" id="ageOutputId">100</output>
+    </form>
+    <br />
+
     <div id="root"></div>
     <!--
       This HTML file is a template.

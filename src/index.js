@@ -7,12 +7,15 @@ import * as serviceWorker from './serviceWorker';
 ReactDOM.render(
   <React.StrictMode>
     <div style={{width:'100%'}} >
-    <h1 style={{textAlign:'center', fontSize:'20px'}}>Axis Information Table </h1>
     <App />
     </div>
   </React.StrictMode>,
   document.getElementById('root')
 );
+
+// function makeWidth(){
+//   console.log('hi')
+// }
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
