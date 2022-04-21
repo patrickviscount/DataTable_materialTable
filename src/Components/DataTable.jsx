@@ -78,11 +78,11 @@ function DataTable() {
   useEffect(()=>{
     let tableWidth = ref.current.offsetWidth
     let num = parseInt(document.documentElement.childNodes[2].childNodes[9].firstChild.firstChild.firstChild.style.width.match(/\d+/g));
-    console.log(num)
-    console.log(tableWidth)
+//     console.log(num)
+//     console.log(tableWidth)
     if(num){
     tableWidth = tableWidth * (0.01 * num);
-    console.log("With num added " +  tableWidth)
+//     console.log("With num added " +  tableWidth)
     }
     if (tableWidth < 975){
       setTitle('');
@@ -490,7 +490,7 @@ function getPageSize(data) {
     }
   }
   else {
-    return 5;
+    return 10;
   }
 }
 
