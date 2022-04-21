@@ -1,0 +1,43 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: grey;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+/* * {
+  overflow: hidden;
+} */
+
+ /* tr {
+  background-color: red;
+} 
+
+ .MuiTable-root {
+  background-color: blue;
+}  */
+
+.MuiToolbar-root {
+  background-color: #00a1f1;
+  color: white;
+}
+
+.MuiTableCell-root {
+  background-color: #f1f1f0;
+}
+
+.MuiTypography-root {
+  color: white;
+}
+
+a {
+  text-decoration: none;
+}
